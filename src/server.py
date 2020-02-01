@@ -19,7 +19,5 @@ def startup_event():
 async def root(request: Request):
     global sampler
 
-    characters = sampler.character_generator(0.2)
-    verses = ''.join(take(300, characters))
-
+    verses = sampler.sample_verses(0.2, 300)
     return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})

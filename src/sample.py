@@ -1,8 +1,8 @@
 import argparse
-import itertools
 import json
 import os.path
 import numpy as np
+from itertools import takewhile, islice
 from keras.models import model_from_json
 from .model import build_inference_model
 
@@ -33,6 +33,20 @@ class TextSampler():
             next_index = np.random.choice(range(len(self.idx2char)), p=p)
 
             yield self.idx2char[next_index]
+
+    def sample_verses(self, temperature, min_length, seed=None):
+        characters = self.character_generator(temperature, seed)
+        if not seed:
+            # Skip the first verse (line) because it often incomplete.
+            # list() is necessary to force the evaluation.
+            list(takewhile(not_line_feed, characters))
+
+        body = ''.join(take(min_length, characters))
+
+        # Complete the last verse
+        last_completion = ''.join(takewhile(not_line_feed, characters))
+
+        return (body + last_completion).strip()
 
 
 def main():
@@ -79,7 +93,11 @@ def random_character():
 
 def take(n, iterable):
     "Return first n items of the iterable as a list"
-    return list(itertools.islice(iterable, n))
+    return list(islice(iterable, n))
+
+
+def not_line_feed(c):
+    return c != '\n'
 
 
 def parse_args():
