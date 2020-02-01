@@ -11,6 +11,7 @@ scikit-learn = "*"
 fastapi = "*"
 uvicorn = "*"
 python-dotenv = "*"
+jinja2 = "*"
 
 [dev-packages]
 
