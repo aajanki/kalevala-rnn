@@ -7,38 +7,43 @@ from keras.models import model_from_json
 from .model import build_inference_model
 
 
+class TextSampler():
+    def __init__(self, path):
+        self.model, self.char2idx, self.idx2char = load_inference_model(path)
+
+    def character_generator(self, temperature, seed=None):
+        """Generator that draws characters from the model forever."""
+        self.model.reset_states()
+
+        if not seed:
+            seed = random_character()
+        encoded = encode_text(seed, self.char2idx)
+
+        # initialize the internal states
+        for i in encoded[:-1]:
+            x = np.array([[i]])
+            self.model.predict(x)
+
+        next_index = encoded[-1]
+        while True:
+            x = np.array([[next_index]])
+            preds = self.model.predict(x)
+            p = np.exp(np.log(np.maximum(preds[0, -1, :], 1e-40)) / temperature)
+            p = p / np.sum(p)
+            next_index = np.random.choice(range(len(self.idx2char)), p=p)
+
+            yield self.idx2char[next_index]
+
+
 def main():
     """Sample text from a pre-trained model."""
     args = parse_args()
-    model, char2idx, idx2char = load_inference_model(args.model_path)
-    seed = args.preseed if args.preseed else random_character()
-    characters = character_generator(
-        model, args.temperature, idx2char, char2idx, seed)
+    sampler = TextSampler(args.model_path)
+    characters = sampler.character_generator(args.temperature, args.preseed)
     text = ''.join(take(args.n, characters))
-    text = seed + text
+    text = args.preseed + text
 
     print(text)
-
-
-def character_generator(model, temperature, idx2char, char2idx, seed):
-    """Generator that draws characters from the model forever."""
-    model.reset_states()
-    encoded = encode_text(seed, char2idx)
-
-    # initialize the internal states
-    for i in encoded[:-1]:
-        x = np.array([[i]])
-        model.predict(x)
-
-    next_index = encoded[-1]
-    while True:
-        x = np.array([[next_index]])
-        preds = model.predict(x)
-        p = np.exp(np.log(np.maximum(preds[0, -1, :], 1e-40)) / temperature)
-        p = p / np.sum(p)
-        next_index = np.random.choice(range(len(idx2char)), p=p)
-
-        yield idx2char[next_index]
 
 
 def encode_text(text, char2idx):

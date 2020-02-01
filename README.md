@@ -26,7 +26,7 @@ python src/train.py
 Generating text from a trained model:
 
 ```
-python src/sample.py -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämöinen" weights/<path>
+python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämöinen" weights/<path>
 ```
 
 ## HTTP server
