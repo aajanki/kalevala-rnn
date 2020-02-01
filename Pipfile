@@ -8,6 +8,9 @@ keras=">=2.2.5,<2.3.0"
 tensorflow = ">=1.15.2,<2.0.0"
 matplotlib = "*"
 scikit-learn = "*"
+fastapi = "*"
+uvicorn = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

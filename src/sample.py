@@ -4,7 +4,7 @@ import json
 import os.path
 import numpy as np
 from keras.models import model_from_json
-from model import build_inference_model
+from .model import build_inference_model
 
 
 def main():

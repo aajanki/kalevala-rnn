@@ -29,6 +29,18 @@ Generating text from a trained model:
 python src/sample.py -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämöinen" weights/<path>
 ```
 
+## HTTP server
+
+Create a file called `.env` with a path to the weights directory:
+```
+MODEL_PATH=weights/path/here
+```
+
+Start the server:
+```
+uvicorn src.server:app --reload --env-file .env
+```
+
 ## License
 
 MIT license
