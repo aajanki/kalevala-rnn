@@ -31,7 +31,7 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 
 ## HTTP server
 
-Setup a dotenv file by using the provided sample as a base. Insert at least the correct model path in `.env` (KALEVALA_MODEL_PATH).
+Copy (and edit if necessary) the sample dotenv file to `.env`.
 ```
 cp sample.env .env
 ```

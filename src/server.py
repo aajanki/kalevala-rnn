@@ -20,21 +20,21 @@ def startup_event():
 
 @app.get("/")
 async def main(request: Request):
-    return await verses_page(request)
+    return verses_page(request)
 
 
 @app.post("/")
 async def verses_with_keywords(request: Request, keywords: str = Form(...)):
-    return await verses_page(request, keywords)
+    return verses_page(request, keywords)
 
 
-async def verses_page(request: Request, keywords: Optional[str]=None):
+def verses_page(request: Request, keywords: Optional[str]=None):
     global sampler
 
     sampler.reset_states()
     temperature = float(os.getenv('KALEVALA_TEMPERATURE', 0.2))
     keyword_sampler = KeywordSampler(split_keywords(keywords))
-    verses = sampler.sample_verses(temperature, 300, keywords=keyword_sampler)
+    verses = sampler.sample_verses(temperature, 200, keywords=keyword_sampler)
     return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})
 
 
