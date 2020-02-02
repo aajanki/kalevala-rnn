@@ -10,7 +10,7 @@ from keras.callbacks import ModelCheckpoint, Callback
 from keras import backend as K
 from keras import optimizers
 from model import build_model, build_inference_model
-from sample import character_generator, take, random_subsequence
+from sample import TextSampler, KeywordSampler, take, random_subsequence
 
 
 def main():
@@ -95,13 +95,6 @@ def split_to_sequences(text, sequence_len, step, char2index):
         yield (seq_in, seq_out)
 
 
-def reverse_char2idx(char2idx):
-    idx2char = [None for i in range(len(char2idx))]
-    for (c, i) in char2idx.items():
-        idx2char[i] = c
-    return idx2char
-
-
 def save_net(model, char2index, output_dir):
     with open(os.path.join(output_dir, 'model.json'), 'w') as f:
         f.write(model.to_json())
@@ -159,8 +152,7 @@ class PrintSampleCallback(Callback):
         super(PrintSampleCallback, self).__init__()
         self.text = text
         self.inference_model = build_inference_model(model)
-        self.char2idx = char2idx
-        self.idx2char = reverse_char2idx(char2idx)
+        self.sampler = TextSampler(self.inference_model, char2idx)
 
     def on_epoch_end(self, epoch, logs=None):
         self._print_sampled(300)
@@ -174,8 +166,9 @@ class PrintSampleCallback(Callback):
         print('-'*40)
 
         self.inference_model.set_weights(self.model.get_weights())
-        characters = character_generator(self.inference_model, 1.0,
-                                         self.idx2char, self.char2idx, seed)
+        self.sampler.reset_states()
+        keywords = KeywordSampler([])
+        characters = self.sampler.character_generator(1.0, seed, keywords)
         print(seed + ''.join(take(n, characters)))
 
 
