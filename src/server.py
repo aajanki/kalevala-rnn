@@ -15,7 +15,7 @@ sampler = None
 @app.on_event("startup")
 def startup_event():
     global sampler
-    sampler = load_sampler(os.getenv('MODEL_PATH'))
+    sampler = load_sampler(os.getenv('KALEVALA_MODEL_PATH'))
 
 
 @app.get("/")
@@ -32,8 +32,9 @@ async def verses_page(request: Request, keywords: Optional[str]=None):
     global sampler
 
     sampler.reset_states()
+    temperature = float(os.getenv('KALEVALA_TEMPERATURE', 0.2))
     keyword_sampler = KeywordSampler(split_keywords(keywords))
-    verses = sampler.sample_verses(0.2, 300, keywords=keyword_sampler)
+    verses = sampler.sample_verses(temperature, 300, keywords=keyword_sampler)
     return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})
 
 

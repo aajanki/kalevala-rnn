@@ -31,9 +31,9 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 
 ## HTTP server
 
-Create a file called `.env` with a path to the weights directory:
+Setup a dotenv file by using the provided sample as a base. Insert at least the correct model path in `.env` (KALEVALA_MODEL_PATH).
 ```
-MODEL_PATH=weights/path/here
+cp sample.env .env
 ```
 
 Start the server:
