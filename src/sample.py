@@ -88,7 +88,12 @@ class TextSampler:
     def sample_next_letter(self, current_index: int, temperature: float) -> Tuple[str, int]:
         preds = self.model.predict(np.array([[current_index]]))
         p = np.exp(np.log(np.maximum(preds[0, -1, :], 1e-40)) / temperature)
-        p = p / np.sum(p)
+        if np.sum(p) < 1e-16:
+            # numerical stability
+            p = np.zeros(len(p))
+            p[np.argmax(preds[0, -1, :])] = 1.0
+        else:
+            p = p / np.sum(p)
         i = np.random.choice(range(len(self.idx2char)), p=p)
         return self.idx2char[i], i
 
