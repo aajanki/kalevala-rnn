@@ -4,7 +4,6 @@ import datetime
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
 from keras.utils import Sequence, to_categorical
 from keras.callbacks import ModelCheckpoint, Callback
 from keras import backend as K

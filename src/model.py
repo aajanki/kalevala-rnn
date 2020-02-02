@@ -1,6 +1,5 @@
-from keras.models import Sequential, load_model
-from keras.layers import LSTM, CuDNNLSTM, Dropout, TimeDistributed, Dense, \
-    Activation, Embedding
+from keras.models import Sequential
+from keras.layers import LSTM, CuDNNLSTM, Dropout, TimeDistributed, Dense, Embedding
 
 
 def build_model(batch_size, embedding_dim, num_lstm_layers, lstm_dim,
