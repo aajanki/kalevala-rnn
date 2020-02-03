@@ -36,7 +36,7 @@ def verses_page(request: Request, keywords: Optional[str]=None):
     sampler.reset_states()
     temperature = float(os.getenv('KALEVALA_TEMPERATURE', 0.2))
     keyword_sampler = KeywordSampler(split_keywords(keywords))
-    verses = sampler.sample_verses(temperature, 200, keywords=keyword_sampler)
+    verses = sampler.sample_verses(temperature, 120, keywords=keyword_sampler)
     return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})
 
 

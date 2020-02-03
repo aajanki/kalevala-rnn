@@ -24,3 +24,9 @@
     background: #02abc7;
     border: 1px solid #02abc7;
 }
+
+.footer-details {
+    font-size: 12px;
+    text-align: center;
+    padding-top: 8px;
+}
