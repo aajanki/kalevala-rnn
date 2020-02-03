@@ -26,7 +26,7 @@ async def main(request: Request):
 
 
 @app.post("/")
-async def verses_with_keywords(request: Request, keywords: str = Form(...)):
+async def verses_with_keywords(request: Request, keywords: str = Form(None)):
     return verses_page(request, keywords)
 
 
