@@ -13,6 +13,7 @@ uvicorn = "*"
 python-dotenv = "*"
 jinja2 = "*"
 python-multipart= "*"
+aiofiles = "*"
 
 [dev-packages]
 

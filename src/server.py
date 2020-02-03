@@ -2,12 +2,14 @@ import os
 import re
 from fastapi import FastAPI, Form
 from starlette.requests import Request
+from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from typing import List, Optional
 from .sample import load_sampler, KeywordSampler
 
 
 app = FastAPI(title='Kalevala-kone')
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory='templates')
 sampler = None
 

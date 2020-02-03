@@ -1,0 +1,26 @@
+#poem {
+    margin: auto;
+    width: 400px;
+}
+
+#poem p {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+}
+
+.generate-button {
+    font-size: 18px;
+    color: #fff;
+    background: #028da4;
+    border: 1px solid #028da4;
+    border-radius: 6px;
+    margin: 10px 0;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.generate-button:hover {
+    background: #02abc7;
+    border: 1px solid #02abc7;
+}

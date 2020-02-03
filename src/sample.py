@@ -33,7 +33,7 @@ class TextSampler:
                       temperature: float,
                       min_length: int,
                       seed:str=None,
-                      keywords: KeywordSampler=None) -> str:
+                      keywords: KeywordSampler=None) -> List[str]:
         """Sample complete verses from the model."""
 
         keywords = keywords or KeywordSampler([])
@@ -48,7 +48,7 @@ class TextSampler:
         # Continue sampling until the next line feed
         last_completion = ''.join(takewhile(not_line_feed, characters))
 
-        return (body + last_completion).strip()
+        return (body + last_completion).strip().split('\n')
 
     def character_generator(self,
                             temperature: float,
