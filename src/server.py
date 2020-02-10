@@ -22,22 +22,20 @@ def startup_event():
 
 @app.get("/")
 async def main(request: Request):
-    return verses_page(request)
+    verses = generate_verses([])
+    return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})
 
 
-@app.post("/")
-async def verses_with_keywords(request: Request, keywords: str = Form(None)):
-    return verses_page(request, keywords)
+@app.get("/api/verses")
+async def verses_api(keywords: str = None):
+    return generate_verses(split_keywords(keywords))
 
 
-def verses_page(request: Request, keywords: Optional[str]=None):
-    global sampler
-
+def generate_verses(keywords: List[str]) -> List[str]:
     sampler.reset_states()
     temperature = float(os.getenv('KALEVALA_TEMPERATURE', 0.2))
-    keyword_sampler = KeywordSampler(split_keywords(keywords))
-    verses = sampler.sample_verses(temperature, 120, keywords=keyword_sampler)
-    return templates.TemplateResponse('main.html', {'request': request, 'verses': verses})
+    keyword_sampler = KeywordSampler(keywords)
+    return sampler.sample_verses(temperature, 120, keywords=keyword_sampler)
 
 
 def split_keywords(keyword_string: Optional[str]) -> List[str]:
@@ -47,6 +45,6 @@ def split_keywords(keyword_string: Optional[str]) -> List[str]:
         keywords = re.split(r'[^a-zåäöA-ZÅÄÖ]+', keyword_string)
         keywords = (x for x in keywords if len(x) > 1 and len(x) < 15)
 
-        # RNN seems to generate slightly better verses if we start
+        # The RNN seems to generate slightly better verses if we start
         # lines with capital letters like in the source material.
         return [x.capitalize() for x in keywords]

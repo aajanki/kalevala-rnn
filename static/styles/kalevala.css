@@ -9,7 +9,7 @@
     margin-bottom: 40px;
 }
 
-.generate-button {
+.btn-generate {
     font-size: 18px;
     color: #fff;
     background: #028da4;
@@ -20,7 +20,7 @@
     cursor: pointer;
 }
 
-.generate-button:hover {
+.btn-generate:hover {
     background: #02abc7;
     border: 1px solid #02abc7;
 }

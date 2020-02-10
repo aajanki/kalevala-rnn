@@ -2,19 +2,20 @@
 <head>
   <title>Kalevala-kone</title>
   <link href="/static/styles/kalevala.css" rel="stylesheet">
+  <script type="text/javascript" src="/static/js/kalevala.js"></script>
 </head>
 <body>
   <div id="poem">
-    <p>
+    <p id="poem-text">
       {% for verse in verses %}
         {{ verse }}<br>
       {% endfor %}
     </p>
-    <form action="/" method="post">
-      <input type="submit" class="generate-button" value="Luo uusi runo">
+    <div>
+      <button class="btn-generate" type="button" onClick="generate_verses()">Luo uusi runo</button>
       <br>
       Sanoja runoon: <input type="text" name="keywords">
-    </form>
+    </div>
   </div>
   <footer>
     <div class="footer-details">
