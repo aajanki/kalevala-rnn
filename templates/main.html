@@ -8,7 +8,10 @@
   <div id="poem">
     <p id="poem-text">
       {% for verse in verses %}
-        {{ verse }}<br>
+        {{ verse }}
+        {% if not loop.last %}
+        <br>
+        {% endif %}
       {% endfor %}
     </p>
     <div>
