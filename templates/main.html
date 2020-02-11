@@ -12,9 +12,9 @@
       {% endfor %}
     </p>
     <div>
-      <button class="btn-generate" type="button" onClick="generate_verses()">Luo uusi runo</button>
+      <button class="btn-generate" type="button" onClick="generate_verses(document.getElementById('keywords-input').value)">Luo uusi runo</button>
       <br>
-      Sanoja runoon: <input type="text" name="keywords">
+      Sanoja runoon: <input type="text" name="keywords" id="keywords-input" onkeypress="return keyhandler(event)">
     </div>
   </div>
   <footer>

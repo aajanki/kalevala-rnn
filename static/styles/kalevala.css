@@ -10,12 +10,13 @@
 }
 
 .btn-generate {
+    display: block;
     font-size: 18px;
     color: #fff;
     background: #028da4;
     border: 1px solid #028da4;
     border-radius: 6px;
-    margin: 10px 0;
+    margin: 10px auto;
     padding: 8px;
     cursor: pointer;
 }
