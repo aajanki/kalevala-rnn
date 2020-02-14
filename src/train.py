@@ -8,15 +8,15 @@ from keras.utils import Sequence, to_categorical
 from keras.callbacks import ModelCheckpoint, Callback
 from keras import backend as K
 from keras import optimizers
-from model import build_model, build_inference_model
-from sample import TextSampler, KeywordSampler, take, random_subsequence
+from .model import build_model, build_inference_model
+from .sample import TextSampler, KeywordSampler, take, random_subsequence
 
 
 def main():
     seq_len = 64
     batch_size = 64
     has_gpu = len(K.tensorflow_backend._get_available_gpus()) > 0
-    data_dir = 'data'
+    data_dir = 'preprocessed'
     output_dir = output_dir_name()
 
     raw_text = load_raw_text(data_dir)

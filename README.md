@@ -20,7 +20,8 @@ pipenv shell
 Training:
 
 ```
-python src/train.py
+python -m src.preprocess
+python -m src.train
 ```
 
 Generating text from a trained model:
