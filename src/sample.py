@@ -98,7 +98,8 @@ class TextSampler:
         return self.idx2char[i], i
 
     def encode_text(self, text: str):
-        return np.fromiter((self.char2idx.get(c, 0) for c in text), int)
+        return np.fromiter(
+            (self.char2idx.get(c, self.char2idx[' ']) for c in text), int)
 
 
 def main():
