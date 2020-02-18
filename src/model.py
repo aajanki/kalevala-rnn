@@ -7,11 +7,15 @@ def build_model(batch_size, embedding_dim, num_lstm_layers, lstm_dim,
     model = Sequential()
     model.add(Embedding(vocab_size, embedding_dim,
                         batch_input_shape=(batch_size, seq_len)))
-    model.add(Dropout(dropout_proportion))
+    if dropout_proportion > 0:
+        model.add(Dropout(dropout_proportion))
     for _ in range(num_lstm_layers):
         lstm = CuDNNLSTM if gpu else LSTM
-        model.add(lstm(lstm_dim, return_sequences=True, stateful=True))
-        model.add(Dropout(dropout_proportion))
+        model.add(lstm(lstm_dim, return_sequences=True, stateful=True,
+                       dropout=dropout_proportion,
+                       recurrent_dropout=dropout_proportion))
+        if dropout_proportion > 0:
+            model.add(Dropout(dropout_proportion))
     model.add(TimeDistributed(Dense(vocab_size, activation='softmax')))
     return model
 

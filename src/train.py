@@ -21,8 +21,8 @@ def main():
 
     raw_text = load_raw_text(data_dir)
     train_batches, char2index = load_data(raw_text, seq_len, batch_size)
-    model = build_model(batch_size=batch_size, embedding_dim=50,
-                        num_lstm_layers=2, lstm_dim=256,
+    model = build_model(batch_size=batch_size, embedding_dim=32,
+                        num_lstm_layers=2, lstm_dim=192,
                         dropout_proportion=0.0, seq_len=seq_len,
                         vocab_size=len(char2index), gpu=has_gpu)
     model.summary()
@@ -35,7 +35,7 @@ def main():
     save_net(model, char2index, output_dir)
 
     cb = callbacks(output_dir, raw_text, model, char2index)
-    hist = model.fit_generator(train_batches, epochs=200, shuffle=False,
+    hist = model.fit_generator(train_batches, epochs=400, shuffle=False,
                                callbacks=cb, verbose=1)
 
     save_weights(model, output_dir)
