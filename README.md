@@ -42,6 +42,20 @@ Start the server:
 uvicorn src.server:app --reload --env-file .env
 ```
 
+## Docker image
+
+Build:
+
+```
+sudo docker build --network=host -t kalevalakone:latest .
+```
+
+Run:
+
+```
+sudo docker run -it --rm -p=5000:5000 kalevalakone:latest
+```
+
 ## License
 
 MIT license
