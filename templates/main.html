@@ -5,24 +5,32 @@
   <script type="text/javascript" src="/static/js/kalevala.js"></script>
 </head>
 <body>
-  <div id="poem">
-    <p id="poem-text">
-      {% for verse in verses %}
-        {{ verse }}
-        {% if not loop.last %}
-        <br>
-        {% endif %}
-      {% endfor %}
-    </p>
-    <div>
-      <button class="btn-generate" type="button" onClick="generate_verses(document.getElementById('keywords-input').value)">Luo uusi runo</button>
+  <h1>Väinämöisen värssyvärkki</h1>
+  <p> Miltä kansalliseepos kuulostaisi keinoälyn kirjoittamana?
+    Trokeetekoäly voisi riimitellä vaikka tähän tapaan:
+  <p id="verses">
+    {% for verse in verses %}
+      {{ verse }}
+      {% if not loop.last %}
       <br>
-      Sanoja runoon: <input type="text" name="keywords" id="keywords-input" onkeypress="return keyhandler(event)">
-    </div>
+      {% endif %}
+    {% endfor %}
+  </p>
+  <div>
+    <button class="btn-generate" type="button" onClick="generate_verses(document.getElementById('keywords-input').value)">
+      Luo uusi runo
+    </button>
+    <br>
+    Aihe runoon:
+    <input type="text" name="keywords" id="keywords-input" onkeypress="return keyhandler(event)">
   </div>
   <footer>
     <div class="footer-details">
-      <a href="https://github.com/aajanki/kalevala-rnn">lähdekoodi</a>
+      <a href="static/selitys.html">Mitä tämä on?</a>
+      &#8226;
+      <a href="https://github.com/aajanki/kalevala-rnn">Lähdekoodi</a>
+      &#8226;
+      <a href="mailto:antti.ajanki@iki.fi">Palaute</a>
     </div>
   </footer>
 </body>

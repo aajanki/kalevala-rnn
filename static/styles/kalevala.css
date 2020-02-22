@@ -1,12 +1,13 @@
-#poem {
-    margin: auto;
-    width: 400px;
+body {
+    margin: 0 auto;
+    width: 420px;
 }
 
-#poem p {
+#verses {
     font-size: 18px;
     line-height: 1.5;
-    margin-bottom: 40px;
+    width: 300px;
+    margin: 20px auto;
 }
 
 .btn-generate {
