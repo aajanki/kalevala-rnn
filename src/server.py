@@ -8,7 +8,10 @@ from typing import List, Optional
 from .sample import load_sampler, KeywordSampler
 
 
-app = FastAPI(title='Kalevala-kone')
+app = FastAPI(title='Kalevala-kone',
+              openapi_url=None,
+              docs_url=None,
+              redoc_url=None)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory='templates')
 sampler = None
