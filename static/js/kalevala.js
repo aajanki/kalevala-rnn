@@ -4,13 +4,18 @@ function generate_verses(keywords) {
         url = url + "?keywords=" + encodeURIComponent(keywords);
     }
 
-    fetch(url).then(function(response) {
+    document.getElementById("keywords-input").value = "";
+
+    return fetch(url).then(function(response) {
+        if (!response.ok) {
+            throw new Error("API returned an error");
+        }
+
         return response.json();
     }).then(function(verses) {
-        let verses_html = verses.join("\n<br>\n");
-        document.getElementById("verses").innerHTML = verses_html;
-
-        document.getElementById("keywords-input").value = "";
+        document.getElementById("verses").innerHTML = verses.join("\n<br>\n");
+    }).catch(function(error) {
+        document.getElementById("verses").innerHTML = "Hups! Jotain meni pieleen!";
     });
 }
 

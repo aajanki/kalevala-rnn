@@ -8,7 +8,7 @@
 <body>
   <h1>Väinämöisen värssyvärkki</h1>
   <p> Miltä kansalliseepos kuulostaisi keinoälyn kirjoittamana?
-    Trokeetekoäly voisi riimitellä vaikka tähän tapaan:
+    Trokeetekoäly riimittelee tähän tapaan:
   <p id="verses">
     {% for verse in verses %}
       {{ verse }}
@@ -26,7 +26,7 @@
     <input type="text" name="keywords" id="keywords-input" onkeypress="return keyhandler(event)">
   </div>
   <footer>
-    <a href="static/selitys.html">Mitä tämä on?</a>
+    <a href="/static/selitys.html">Mitä tämä on?</a>
     &#8226;
     <a href="https://github.com/aajanki/kalevala-rnn">Lähdekoodi</a>
     &#8226;
