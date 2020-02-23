@@ -1,12 +1,12 @@
 body {
     margin: 0 auto;
-    width: 420px;
+    width: 30em;
 }
 
 #verses {
     font-size: large;
-    line-height: 1.5;
-    width: 300px;
+    line-height: 1.5em;
+    width: 20em;
     margin: 20px auto;
 }
 
