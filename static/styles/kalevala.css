@@ -4,7 +4,7 @@ body {
 }
 
 #verses {
-    font-size: 18px;
+    font-size: large;
     line-height: 1.5;
     width: 300px;
     margin: 20px auto;
@@ -12,7 +12,7 @@ body {
 
 .btn-generate {
     display: block;
-    font-size: 18px;
+    font-size: large;
     color: #fff;
     background: #028da4;
     border: 1px solid #028da4;
@@ -27,8 +27,12 @@ body {
     border: 1px solid #02abc7;
 }
 
-.footer-details {
-    font-size: 12px;
+footer {
+    font-size: small;
     text-align: center;
-    padding-top: 8px;
+    margin-top: 10px;
+    padding-top: 4px;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: lightgray;
 }
