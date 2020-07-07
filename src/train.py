@@ -2,6 +2,7 @@ import datetime
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+import plac
 import tensorflowjs as tfjs
 from pathlib import Path
 from tensorflow.keras.utils import Sequence, to_categorical
@@ -11,7 +12,8 @@ from .model import build_model, build_inference_model
 from .sample import TextSampler, KeywordSampler, take, random_subsequence
 
 
-def main():
+@plac.opt('epochs', "Number of training epochs", type=int)
+def main(epochs=400):
     seq_len = 64
     batch_size = 64
     data_path = Path('preprocessed')
@@ -33,8 +35,8 @@ def main():
     save_net(model, char2index, output_path)
 
     cb = callbacks(output_path, raw_text, model, char2index)
-    hist = model.fit_generator(train_batches, epochs=400, shuffle=False,
-                               callbacks=cb, verbose=1)
+    hist = model.fit(train_batches, epochs=epochs, shuffle=False,
+                     callbacks=cb, verbose=1)
 
     save_weights(model, output_path)
     save_training_history(hist, output_path)
@@ -179,4 +181,4 @@ class ResetStatesCallback(Callback):
 
 
 if __name__ == '__main__':
-    main()
+    plac.call(main)
