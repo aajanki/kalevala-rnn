@@ -11,8 +11,9 @@ fastapi = "*"
 uvicorn = "*"
 python-dotenv = "*"
 jinja2 = "*"
-python-multipart= "*"
+python-multipart = "*"
 aiofiles = "*"
+tensorflowjs = ">=2.0.0,<3.0.0"
 
 [dev-packages]
 

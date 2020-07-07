@@ -4,6 +4,7 @@ import datetime
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+import tensorflowjs as tfjs
 from tensorflow.keras.utils import Sequence, to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback
 from tensorflow.keras import optimizers
@@ -102,6 +103,10 @@ def save_net(model, char2index, output_dir):
 
 def save_weights(model, output_dir):
     model.save_weights(os.path.join(output_dir, 'weights.hdf5'))
+
+    tfjs_output_dir = os.path.join(output_dir, 'tfjs')
+    os.makedirs(tfjs_output_dir, exist_ok=True)
+    tfjs.converters.save_keras_model(model, tfjs_output_dir)
 
 
 def save_training_history(hist, output_dir):
