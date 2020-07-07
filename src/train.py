@@ -1,10 +1,9 @@
-import os
-import os.path
 import datetime
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflowjs as tfjs
+from pathlib import Path
 from tensorflow.keras.utils import Sequence, to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback
 from tensorflow.keras import optimizers
@@ -15,10 +14,10 @@ from .sample import TextSampler, KeywordSampler, take, random_subsequence
 def main():
     seq_len = 64
     batch_size = 64
-    data_dir = 'preprocessed'
-    output_dir = output_dir_name()
+    data_path = Path('preprocessed')
+    output_path = output_path_name()
 
-    raw_text = load_raw_text(data_dir)
+    raw_text = load_raw_text(data_path)
     train_batches, char2index = load_data(raw_text, seq_len, batch_size)
     model = build_model(batch_size=batch_size, embedding_dim=32,
                         num_lstm_layers=2, lstm_dim=192,
@@ -29,21 +28,20 @@ def main():
                   optimizer=optimizers.RMSprop(clipnorm=5.0),
                   metrics=['accuracy'])
 
-    os.makedirs(output_dir)
-    print('Saving the model to {}'.format(output_dir))
-    save_net(model, char2index, output_dir)
+    output_path.mkdir()
+    print(f'Saving the model to {output_path}')
+    save_net(model, char2index, output_path)
 
-    cb = callbacks(output_dir, raw_text, model, char2index)
+    cb = callbacks(output_path, raw_text, model, char2index)
     hist = model.fit_generator(train_batches, epochs=400, shuffle=False,
                                callbacks=cb, verbose=1)
 
-    save_weights(model, output_dir)
-    save_training_history(hist, output_dir)
+    save_weights(model, output_path)
+    save_training_history(hist, output_path)
 
 
-def callbacks(output_dir, text, model, char2idx):
-    checkpoint_template = os.path.join(
-        output_dir, 'weights.{epoch:02d}.hdf5')
+def callbacks(output_path, text, model, char2idx):
+    checkpoint_template = str(output_path / 'weights.{epoch:02d}.hdf5')
     return [
         ResetStatesCallback(),
         ModelCheckpoint(checkpoint_template),
@@ -51,15 +49,15 @@ def callbacks(output_dir, text, model, char2idx):
     ]
 
 
-def output_dir_name():
-    return 'weights/{}'.format(
-        datetime.datetime.now().replace(microsecond=0).isoformat())
+def output_path_name():
+    return (Path('weights') /
+            datetime.datetime.now().replace(microsecond=0).isoformat())
 
 
-def load_raw_text(datadir):
+def load_raw_text(data_path):
     return '\n'.join([
-        open(os.path.join(datadir, file), encoding='utf-8-sig').read()
-        for file in os.listdir(datadir)
+        p.open(encoding='utf-8-sig').read()
+        for p in data_path.iterdir()
     ])
 
 
@@ -93,30 +91,30 @@ def split_to_sequences(text, sequence_len, step, char2index):
         yield (seq_in, seq_out)
 
 
-def save_net(model, char2index, output_dir):
-    with open(os.path.join(output_dir, 'model.json'), 'w') as f:
+def save_net(model, char2index, output_path):
+    with (output_path / 'model.json').open('w') as f:
         f.write(model.to_json())
 
-    with open(os.path.join(output_dir, 'char2idx.json'), 'w') as f:
+    with (output_path / 'char2idx.json').open('w') as f:
         json.dump(char2index, f)
 
 
-def save_weights(model, output_dir):
-    model.save_weights(os.path.join(output_dir, 'weights.hdf5'))
+def save_weights(model, output_path):
+    model.save_weights(str(output_path / 'weights.hdf5'))
 
-    tfjs_output_dir = os.path.join(output_dir, 'tfjs')
-    os.makedirs(tfjs_output_dir, exist_ok=True)
-    tfjs.converters.save_keras_model(model, tfjs_output_dir)
+    tfjs_output_path = output_path / 'tfjs'
+    tfjs_output_path.mkdir(exist_ok=True)
+    tfjs.converters.save_keras_model(model, tfjs_output_path)
 
 
-def save_training_history(hist, output_dir):
+def save_training_history(hist, output_path):
     if 'loss' in hist.history:
         plt.plot(hist.history['loss'], label='train')
     if 'val_loss' in hist.history:
         plt.plot(hist.history['val_loss'], label='test')
     plt.title('Loss')
     plt.legend()
-    plt.savefig(os.path.join(output_dir, 'loss.png'))
+    plt.savefig(output_path / 'loss.png')
     plt.close()
 
     if 'acc' in hist.history:
@@ -125,7 +123,7 @@ def save_training_history(hist, output_dir):
         plt.plot(hist.history['val_acc'], label='test')
     plt.title('Accuracy')
     plt.legend()
-    plt.savefig(os.path.join(output_dir, 'accuracy.png'))
+    plt.savefig(output_path / 'accuracy.png')
     plt.close()
 
 
