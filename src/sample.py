@@ -4,7 +4,7 @@ import os.path
 import numpy as np
 from typing import Iterator, List, Optional, Tuple
 from itertools import takewhile, islice
-from keras.models import model_from_json
+from tensorflow.keras.models import model_from_json
 from .model import build_inference_model
 
 

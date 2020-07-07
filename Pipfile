@@ -4,8 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-keras=">=2.2.5,<2.3.0"
-tensorflow = ">=1.15.2,<2.0.0"
+tensorflow = ">=2.2.0,<2.3.0"
 numpy = "*"
 matplotlib = "*"
 fastapi = "*"
@@ -18,4 +17,4 @@ aiofiles = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"

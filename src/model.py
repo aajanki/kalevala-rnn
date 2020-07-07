@@ -1,17 +1,16 @@
-from keras.models import Sequential
-from keras.layers import LSTM, CuDNNLSTM, Dropout, TimeDistributed, Dense, Embedding
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dropout, TimeDistributed, Dense, Embedding
 
 
 def build_model(batch_size, embedding_dim, num_lstm_layers, lstm_dim,
-                dropout_proportion, seq_len, vocab_size, gpu=False):
+                dropout_proportion, seq_len, vocab_size):
     model = Sequential()
     model.add(Embedding(vocab_size, embedding_dim,
                         batch_input_shape=(batch_size, seq_len)))
     if dropout_proportion > 0:
         model.add(Dropout(dropout_proportion))
     for _ in range(num_lstm_layers):
-        lstm = CuDNNLSTM if gpu else LSTM
-        model.add(lstm(lstm_dim, return_sequences=True, stateful=True,
+        model.add(LSTM(lstm_dim, return_sequences=True, stateful=True,
                        dropout=dropout_proportion,
                        recurrent_dropout=dropout_proportion))
         if dropout_proportion > 0:

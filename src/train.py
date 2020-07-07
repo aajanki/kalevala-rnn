@@ -4,10 +4,9 @@ import datetime
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.utils import Sequence, to_categorical
-from keras.callbacks import ModelCheckpoint, Callback
-from keras import backend as K
-from keras import optimizers
+from tensorflow.keras.utils import Sequence, to_categorical
+from tensorflow.keras.callbacks import ModelCheckpoint, Callback
+from tensorflow.keras import optimizers
 from .model import build_model, build_inference_model
 from .sample import TextSampler, KeywordSampler, take, random_subsequence
 
@@ -15,7 +14,6 @@ from .sample import TextSampler, KeywordSampler, take, random_subsequence
 def main():
     seq_len = 64
     batch_size = 64
-    has_gpu = len(K.tensorflow_backend._get_available_gpus()) > 0
     data_dir = 'preprocessed'
     output_dir = output_dir_name()
 
@@ -24,7 +22,7 @@ def main():
     model = build_model(batch_size=batch_size, embedding_dim=32,
                         num_lstm_layers=2, lstm_dim=192,
                         dropout_proportion=0.0, seq_len=seq_len,
-                        vocab_size=len(char2index), gpu=has_gpu)
+                        vocab_size=len(char2index))
     model.summary()
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.RMSprop(clipnorm=5.0),
@@ -128,7 +126,7 @@ def save_training_history(hist, output_dir):
 
 class OneHotLabelBatchSequence(Sequence):
     def __init__(self, x, y, num_classes, batch_len):
-        super(OneHotLabelBatchSequence, self).__init__()
+        super().__init__()
 
         self.x = x
         self.y = y
@@ -148,7 +146,7 @@ class OneHotLabelBatchSequence(Sequence):
 
 class PrintSampleCallback(Callback):
     def __init__(self, text, model, char2idx):
-        super(PrintSampleCallback, self).__init__()
+        super().__init__()
         self.text = text
         self.inference_model = build_inference_model(model)
         self.sampler = TextSampler(self.inference_model, char2idx)
@@ -161,6 +159,7 @@ class PrintSampleCallback(Callback):
 
     def _print_sampled(self, n):
         seed = random_subsequence(self.text)
+        print()
         print('generating with seed: {}'.format(seed))
         print('-'*40)
 
