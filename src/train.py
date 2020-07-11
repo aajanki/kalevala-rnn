@@ -3,7 +3,6 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 import plac
-import tensorflowjs as tfjs
 from pathlib import Path
 from tensorflow.keras.utils import Sequence, to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, Callback
@@ -18,7 +17,6 @@ def main(epochs=400):
     batch_size = 64
     data_path = Path('preprocessed')
     output_path = output_path_name()
-    tfjs_output_path = output_path / 'tfjs'
 
     raw_text = load_raw_text(data_path)
     train_batches, char2index = load_data(raw_text, seq_len, batch_size)
@@ -40,7 +38,6 @@ def main(epochs=400):
                      callbacks=cb, verbose=1)
 
     save_weights(model, output_path)
-    save_tfjs_model(model, tfjs_output_path)
     save_training_history(hist, output_path)
 
 
@@ -105,12 +102,6 @@ def save_net(model, char2index, output_path):
 
 def save_weights(model, output_path):
     model.save_weights(str(output_path / 'weights.hdf5'))
-
-
-def save_tfjs_model(model, output_path):
-    output_path.mkdir(exist_ok=True)
-    inference_model = build_inference_model(model)
-    tfjs.converters.save_keras_model(inference_model, output_path)
 
 
 def save_training_history(hist, output_path):

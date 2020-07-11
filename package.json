@@ -1,0 +1,38 @@
+{
+  "name": "kalevala-rnn",
+  "version": "1.0.0",
+  "description": "This project trains a recurrent neural network (RNN) that generates text imitating the style of Kalevala and Kanteletar.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aajanki/kalevala-rnn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aajanki/kalevala-rnn/issues"
+  },
+  "homepage": "https://github.com/aajanki/kalevala-rnn#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.10.4",
+    "@tensorflow/tfjs": "^2.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "babel-preset-env": "^1.7.0",
+    "parcel-plugin-static-files-copy": "^2.4.3"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "tfjsmodel",
+        "staticOutDir": "tfjs"
+      }
+    ]
+  }
+}
