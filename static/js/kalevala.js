@@ -8,9 +8,9 @@ class TextSampler {
     }
 
     sampleString(seed, n, temperature) {
-        seed = seed || this.randomCharacter();
+        seed = seed || this.randomUpperCaseCharacter();
 
-	this.resetStates();
+        this.resetStates();
         this.advance(seed.slice(0, -1));
 
         var res = seed;
@@ -44,11 +44,15 @@ class TextSampler {
     }
 
     resetStates() {
-	this.model.resetStates();
+        this.model.resetStates();
     }
 
-    randomCharacter() {
-        const characters = Object.keys(this.char2idx).join('');
+    randomUpperCaseCharacter() {
+        const upperCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ';
+        const characters = Object.keys(this.char2idx)
+              .filter(c => upperCaseLetters.includes(c))
+              .join('');
+
         return characters.charAt(Math.floor(Math.random() * characters.length));
     }
 
