@@ -114,10 +114,10 @@ def save_training_history(hist, output_path):
     plt.savefig(output_path / 'loss.png')
     plt.close()
 
-    if 'acc' in hist.history:
-        plt.plot(hist.history['acc'], label='train')
-    if 'val_acc' in hist.history:
-        plt.plot(hist.history['val_acc'], label='test')
+    if 'accuracy' in hist.history:
+        plt.plot(hist.history['accuracy'], label='train')
+    if 'val_accuracy' in hist.history:
+        plt.plot(hist.history['val_accuracy'], label='test')
     plt.title('Accuracy')
     plt.legend()
     plt.savefig(output_path / 'accuracy.png')
