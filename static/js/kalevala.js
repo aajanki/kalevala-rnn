@@ -9,6 +9,8 @@ class TextSampler {
 
     sampleString(seed, n, temperature) {
         seed = seed || this.randomCharacter();
+
+	this.resetStates();
         this.advance(seed.slice(0, -1));
 
         var res = seed;
@@ -39,6 +41,10 @@ class TextSampler {
         return this.idx2char[
             tf.multinomial(p, 1, undefined, true).arraySync()
         ];
+    }
+
+    resetStates() {
+	this.model.resetStates();
     }
 
     randomCharacter() {
