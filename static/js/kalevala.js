@@ -42,21 +42,16 @@ class TextSampler {
 
     sampleCharacter(current_char, temperature) {
         const i = this.encodeChar(current_char);
-        const q = this.model.predict(tf.tensor([[i]]));
-        const pt = tf.exp(tf.log(tf.maximum(q, 1e-40)).div(tf.scalar(temperature)));
-        const ptNorm = pt.norm(1);
-        var p;
-        if (ptNorm.arraySync() > 1e-16) {
-            p = pt.div(ptNorm).squeeze();
-        } else {
-            // Numerical stability: Assign all probability on the
-            // maximum element
-            p = tf.oneHot(tf.argMax(q.flatten()), Object.keys(this.char2idx).length)
-                .asType('float32');
-        }
+        const q = this.model.predict(tf.tensor([[i]])).squeeze();
+
+        // Scale with temperature in the log space and normalize so
+        // that probabilities sum to one in the linear space.
+        const logQt = q.maximum(1e-37).log().div(temperature);
+        const scaling = tf.logSumExp(logQt);
+        const logP = logQt.sub(scaling);
 
         return this.idx2char[
-            tf.multinomial(p, 1, undefined, true).arraySync()
+            tf.multinomial(logP, 1).arraySync()
         ];
     }
 
