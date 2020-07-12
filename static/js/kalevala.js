@@ -7,10 +7,10 @@ class TextSampler {
         this.idx2char = this.reverseChar2idx(char2idx);
     }
 
-    sampleString(seed, n, temperature) {
+    sampleString(n, temperature, seed) {
         seed = seed || this.randomUpperCaseCharacter();
 
-        this.resetStates();
+        this.model.resetStates();
         this.advance(seed.slice(0, -1));
 
         var res = seed;
@@ -41,10 +41,6 @@ class TextSampler {
         return this.idx2char[
             tf.multinomial(p, 1, undefined, true).arraySync()
         ];
-    }
-
-    resetStates() {
-        this.model.resetStates();
     }
 
     randomUpperCaseCharacter() {
@@ -84,7 +80,7 @@ function generateVerses(sampler, keywords) {
     const versesNode = document.getElementById("verses");
     versesNode.innerHTML = '';
     
-    const verses = sampler.sampleString(undefined, 120, 0.1).split('\n');
+    const verses = sampler.sampleString(120, 0.1).split('\n');
     for (const line of verses) {
         versesNode.appendChild(document.createTextNode(line));
         versesNode.appendChild(document.createElement('br'));
@@ -92,7 +88,7 @@ function generateVerses(sampler, keywords) {
     }
 }
 
-async function runKalevalaSampler() {
+async function initialize() {
     const char2idx = await (await fetch('/tfjs/char2idx.json')).json();
     const model = await tf.loadLayersModel('/tfjs/model.json');
     const sampler = new TextSampler(model, char2idx);
@@ -119,4 +115,4 @@ async function runKalevalaSampler() {
     generateVerses(sampler, verses);
 }
 
-runKalevalaSampler();
+initialize();
