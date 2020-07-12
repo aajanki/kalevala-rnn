@@ -34,7 +34,9 @@ def main(model_path):
     shutil.copy(path / 'char2idx.json', output_path / 'char2idx.json')
 
     # The web app build process reads the model from this link
-    Path('tfjsmodel').symlink_to(output_path, True)
+    model_path = Path('tfjsmodel')
+    model_path.unlink(missing_ok=True)
+    model_path.symlink_to(output_path, True)
 
 
 if __name__ == '__main__':
