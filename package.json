@@ -19,7 +19,8 @@
   "homepage": "https://github.com/aajanki/kalevala-rnn#readme",
   "dependencies": {
     "@babel/runtime": "^7.10.4",
-    "@tensorflow/tfjs": "^2.0.1"
+    "@tensorflow/tfjs": "^2.0.1",
+    "wu": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

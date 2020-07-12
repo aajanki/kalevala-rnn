@@ -1,4 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
+import wu from 'wu';
+
 
 class TextSampler {
     constructor(model, char2idx) {
@@ -7,20 +9,35 @@ class TextSampler {
         this.idx2char = this.reverseChar2idx(char2idx);
     }
 
-    sampleString(n, temperature, seed) {
+    // A generator that outputs an infinite sequence of Kalevala verses.
+    //
+    // Temperature controls the randomness of the output.
+    // Seed is an optional string that will be the start of the sequence.
+    * makeVerseGenerator(temperature, seed) {
+        const characters = wu(this.makeCharacterGenerator(temperature, seed));
+        while (true) {
+            yield characters
+                .takeWhile(c => c != '\n')
+                .toArray()
+                .join('') +
+                '\n';
+        }
+    }
+
+    * makeCharacterGenerator(temperature, seed) {
         seed = seed || this.randomUpperCaseCharacter();
 
+        // Initialize the internal state
         this.model.resetStates();
         this.advance(seed.slice(0, -1));
 
-        var res = seed;
+        yield *seed;
+        
         var c = seed.slice(-1);
-        for (var i=0; i < n; i++) {
+        while (true) {
             c = this.sampleCharacter(c, temperature);
-            res += c;
+            yield c;
         }
-
-        return res;
     }
 
     sampleCharacter(current_char, temperature) {
@@ -76,16 +93,19 @@ class TextSampler {
     }
 }
 
-function generateVerses(sampler, keywords) {
+function replaceVerses(sampler, keywords) {
     const versesNode = document.getElementById("verses");
     versesNode.innerHTML = '';
-    
-    const verses = sampler.sampleString(120, 0.1).split('\n');
-    for (const line of verses) {
-        versesNode.appendChild(document.createTextNode(line));
-        versesNode.appendChild(document.createElement('br'));
-        versesNode.appendChild(document.createTextNode('\n'));
-    }
+
+    wu(sampler.makeVerseGenerator(0.1))
+        .drop(1)
+        .dropWhile(line => line == '\n')
+        .take(6)
+        .forEach(verse => {
+            versesNode.appendChild(document.createTextNode(verse));
+            versesNode.appendChild(document.createElement('br'));
+            versesNode.appendChild(document.createTextNode('\n'));
+        });
 }
 
 async function initialize() {
@@ -97,7 +117,7 @@ async function initialize() {
         const verses = document.getElementById('keywords-input').value.split(' ');
         document.getElementById("keywords-input").value = "";
 
-        generateVerses(sampler, verses);
+        replaceVerses(sampler, verses);
     };
 
     function keyhandler(event) {
@@ -112,7 +132,7 @@ async function initialize() {
     document.getElementById('btn-generate').addEventListener('click', generateWithKeywords);
     document.getElementById('keywords-input').addEventListener('keydown', keyhandler);
 
-    generateVerses(sampler, verses);
+    replaceVerses(sampler, verses);
 }
 
 initialize();
