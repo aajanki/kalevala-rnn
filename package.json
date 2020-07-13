@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/runtime": "^7.10.4",
     "@tensorflow/tfjs": "^2.0.1",
-    "wu": "^2.1.0"
+    "iter-tools": "^7.0.0-rc.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

@@ -1,5 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
-import wu from 'wu';
+import {
+    asyncDrop, asyncDropWhile, asyncTake, asyncTakeWhile, asyncForEach,
+    asyncJoinAsStringWith, asyncTap, asyncSplitOn, asyncToArray, pipe
+} from 'iter-tools/es2018';
 
 
 class TextSampler {
@@ -13,34 +16,33 @@ class TextSampler {
     //
     // Temperature controls the randomness of the output.
     // Seed is an optional string that will be the start of the sequence.
-    * makeVerseGenerator(temperature, seed) {
-        const characters = wu(this.makeCharacterGenerator(temperature, seed));
-        while (true) {
-            yield characters
-                .takeWhile(c => c != '\n')
-                .toArray()
-                .join('') +
-                '\n';
+    async* verseGenerator(temperature, seed) {
+        const characters = await this.characterGenerator(temperature, seed);
+
+        for await (const lineCharacters of asyncSplitOn('\n', characters)) {
+            const charArray = await asyncToArray(lineCharacters);
+            const line = charArray.join('') + '\n';
+            yield line;
         }
     }
 
-    * makeCharacterGenerator(temperature, seed) {
+    async* characterGenerator(temperature, seed) {
         seed = seed || this.randomUpperCaseCharacter();
 
         // Initialize the internal state
         this.model.resetStates();
         this.advance(seed.slice(0, -1));
 
-        yield *seed;
+        yield* seed;
         
         var c = seed.slice(-1);
         while (true) {
-            c = this.sampleCharacter(c, temperature);
+            c = await this.sampleCharacter(c, temperature);
             yield c;
         }
     }
 
-    sampleCharacter(current_char, temperature) {
+    async sampleCharacter(current_char, temperature) {
         const i = this.encodeChar(current_char);
         const q = this.model.predict(tf.tensor([[i]])).squeeze();
 
@@ -51,7 +53,7 @@ class TextSampler {
         const logP = logQt.sub(scaling);
 
         return this.idx2char[
-            tf.multinomial(logP, 1).arraySync()
+            await tf.multinomial(logP, 1).array()
         ];
     }
 
@@ -88,19 +90,23 @@ class TextSampler {
     }
 }
 
-function replaceVerses(sampler, keywords) {
+async function replaceVerses(sampler, keywords) {
     const versesNode = document.getElementById("verses");
     versesNode.innerHTML = '';
 
-    wu(sampler.makeVerseGenerator(0.1))
-        .drop(1)
-        .dropWhile(line => line == '\n')
-        .take(6)
-        .forEach(verse => {
-            versesNode.appendChild(document.createTextNode(verse));
-            versesNode.appendChild(document.createElement('br'));
-            versesNode.appendChild(document.createTextNode('\n'));
-        });
+    const verses = await sampler.verseGenerator(0.1);
+    const selectVerses = pipe(
+        //asyncTap(item => console.log(item)),
+        asyncDrop(1),
+        asyncDropWhile(s => s == '\n'),
+        asyncTake(6),
+    );
+
+    asyncForEach(verse => {
+        versesNode.appendChild(document.createTextNode(verse));
+        versesNode.appendChild(document.createElement('br'));
+        versesNode.appendChild(document.createTextNode('\n'));
+    }, selectVerses(verses));
 }
 
 async function initialize() {
@@ -108,26 +114,30 @@ async function initialize() {
     const model = await tf.loadLayersModel('/tfjs/model.json');
     const sampler = new TextSampler(model, char2idx);
 
-    function generateWithKeywords() {
+    async function generateWithKeywords() {
         const verses = document.getElementById('keywords-input').value.split(' ');
         document.getElementById("keywords-input").value = "";
 
-        replaceVerses(sampler, verses);
+        await replaceVerses(sampler, verses);
     };
 
-    function keyhandler(event) {
+    async function keyhandler(event) {
         if (event.key == "Enter" || event.keyCode == 13) {
-            generateWithKeywords();
+            await generateWithKeywords();
             return false;
         } else {
             return true;
         }
     }
 
-    document.getElementById('btn-generate').addEventListener('click', generateWithKeywords);
-    document.getElementById('keywords-input').addEventListener('keydown', keyhandler);
+    document
+        .getElementById('btn-generate')
+        .addEventListener('click', async () => await generateWithKeywords());
+    document
+        .getElementById('keywords-input')
+        .addEventListener('keydown', async () => await keyhandler());
 
-    replaceVerses(sampler, verses);
+    await replaceVerses(sampler, verses);
 }
 
 initialize();

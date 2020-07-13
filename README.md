@@ -24,7 +24,7 @@ Training:
 ```
 python -m src.preprocess
 python -m src.train
-python -m src.convert2tfjs weights/2020-07-07T21:19:37/  # <- replace the path!
+python -m src.convert2tfjs "weights/2020-07-07T21:19:37/"  # <- replace the path!
 ```
 
 Generating text from a trained model:
