@@ -88,7 +88,12 @@ class TextSampler {
     }
 
     encodeChar(c) {
-        return this.char2idx[c] || this.char2idx[' '];
+        const i = this.char2idx[c];
+        if (typeof i === 'undefined') {
+            return this.char2idx[' '];
+        } else {
+            return i;
+        }
     }
 
     reverseChar2idx(char2idx) {
