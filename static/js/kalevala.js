@@ -1,7 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import {
-    asyncDrop, asyncDropWhile, asyncTake, asyncTakeWhile, asyncForEach,
-    asyncJoinAsStringWith, asyncTap, asyncSplitOn, asyncToArray, pipe
+    asyncDrop, asyncDropWhile, asyncTap, asyncSplitOn, asyncToArray, pipe
 } from 'iter-tools/es2018';
 
 
@@ -138,12 +137,14 @@ async function replaceVerses(sampler, keywords) {
     try {
         const seeds = new SeedKeywords(undefined, keywords);
         const verses = await sampler.verseGenerator(0.1, seeds);
-        const selectVerses = pipe(
-            //asyncTap(item => console.log(item)),
-            asyncDrop(1),
-            asyncDropWhile(s => s == '\n'),
-            asyncTake(6),
-        );
+        let rowsSeen = 0;
+        const selectVerses = it => asyncTake(
+            6,
+            pipe(
+                //asyncTap(item => console.log(item)),
+                asyncDrop(1),
+                asyncDropWhile(s => s == '\n'),
+            )(it));
 
         for await (const verse of await asyncToArray(selectVerses(verses))) {
             versesNode.appendChild(document.createTextNode(verse));
@@ -190,6 +191,21 @@ function showSpinner() {
 function hideSpinner() {
     for (const el of document.getElementsByClassName('spinner')) {
         el.style.display = 'none';
+    }
+}
+
+/*
+ * asyncTake from iter-tools actually consumes n+1 elements from the
+ * iterable. This optimized version consumes exactly n elements.
+ */
+async function* asyncTake(n, iterable) {
+    if (n > 0) {
+        let i = 0;
+        for await (const item of iterable) {
+            yield item;
+            i++;
+            if (i >= n) break;
+        }
     }
 }
 
