@@ -129,6 +129,7 @@ class SeedKeywords {
 async function replaceVerses(sampler, keywords) {
     const versesNode = document.getElementById("verses");
     versesNode.innerHTML = '';
+    showSpinner();
 
     const seeds = new SeedKeywords(undefined, keywords);
     const verses = await sampler.verseGenerator(0.1, seeds);
@@ -139,11 +140,13 @@ async function replaceVerses(sampler, keywords) {
         asyncTake(6),
     );
 
-    asyncForEach(verse => {
+    for await (const verse of await asyncToArray(selectVerses(verses))) {
         versesNode.appendChild(document.createTextNode(verse));
         versesNode.appendChild(document.createElement('br'));
         versesNode.appendChild(document.createTextNode('\n'));
-    }, selectVerses(verses));
+    }
+
+    hideSpinner();
 }
 
 function sampleWeighted(items, weights) {
@@ -163,6 +166,18 @@ function sampleWeighted(items, weights) {
 
 function range(n) {
     return [...Array(n).keys()];
+}
+
+function showSpinner() {
+    for (const el of document.getElementsByClassName('spinner')) {
+        el.style.display = 'block';
+    }
+}
+
+function hideSpinner() {
+    for (const el of document.getElementsByClassName('spinner')) {
+        el.style.display = 'none';
+    }
 }
 
 async function initialize() {
