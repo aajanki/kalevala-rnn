@@ -52,19 +52,23 @@ class TextSampler {
         }
     }
 
-    async sampleCharacter(current_char, temperature) {
-        const i = this.encodeChar(current_char);
-        const q = this.model.predict(tf.tensor([[i]])).squeeze();
+    async sampleCharacter(currentChar, temperature) {
+        const nextIndex = tf.tidy(() => {
+            const i = this.encodeChar(currentChar);
+            const q = this.model.predict(tf.tensor([[i]])).squeeze();
 
-        // Scale with temperature in the log space and normalize so
-        // that probabilities sum to one in the linear space.
-        const logQt = q.maximum(1e-37).log().div(temperature);
-        const scaling = tf.logSumExp(logQt);
-        const logP = logQt.sub(scaling);
+            // Scale with temperature in the log space and normalize so
+            // that probabilities sum to one in the linear space.
+            const logQt = q.maximum(1e-37).log().div(temperature);
+            const scaling = tf.logSumExp(logQt);
+            const logP = logQt.sub(scaling);
+            return tf.multinomial(logP, 1);
+        })
 
-        return this.idx2char[
-            await tf.multinomial(logP, 1).array()
-        ];
+        const nextChar = this.idx2char[await nextIndex.array()];
+        nextIndex.dispose();
+
+        return nextChar;
     }
 
     randomUpperCaseCharacter() {
