@@ -135,22 +135,31 @@ async function replaceVerses(sampler, keywords) {
     versesNode.innerHTML = '';
     showSpinner();
 
-    const seeds = new SeedKeywords(undefined, keywords);
-    const verses = await sampler.verseGenerator(0.1, seeds);
-    const selectVerses = pipe(
-        //asyncTap(item => console.log(item)),
-        asyncDrop(1),
-        asyncDropWhile(s => s == '\n'),
-        asyncTake(6),
-    );
+    try {
+        const seeds = new SeedKeywords(undefined, keywords);
+        const verses = await sampler.verseGenerator(0.1, seeds);
+        const selectVerses = pipe(
+            //asyncTap(item => console.log(item)),
+            asyncDrop(1),
+            asyncDropWhile(s => s == '\n'),
+            asyncTake(6),
+        );
 
-    for await (const verse of await asyncToArray(selectVerses(verses))) {
-        versesNode.appendChild(document.createTextNode(verse));
+        for await (const verse of await asyncToArray(selectVerses(verses))) {
+            versesNode.appendChild(document.createTextNode(verse));
+            versesNode.appendChild(document.createElement('br'));
+            versesNode.appendChild(document.createTextNode('\n'));
+        }
+    } catch (e) {
+        console.error(e, e.stack);
+
+        versesNode.innerHTML = '';
+        versesNode.appendChild(document.createTextNode('Jotain meni pieleen!'));
         versesNode.appendChild(document.createElement('br'));
-        versesNode.appendChild(document.createTextNode('\n'));
+        versesNode.appendChild(document.createTextNode('Nyt ei runosuoni syki!'));
+    } finally {
+        hideSpinner();
     }
-
-    hideSpinner();
 }
 
 function sampleWeighted(items, weights) {
@@ -199,7 +208,11 @@ async function initialize() {
               .map(s => s[0].toUpperCase() + s.slice(1));
         document.getElementById("keywords-input").value = "";
 
+        const t0 = performance.now();
         await replaceVerses(sampler, keywords);
+        const t1 = performance.now();
+
+        console.debug(`Generation took ${t1 - t0} ms`);
     };
 
     async function keyhandler(event) {
