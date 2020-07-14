@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-backend-wasm';
 import {
     asyncDrop, asyncDropWhile, asyncTap, asyncSplitOn, asyncToArray, pipe
 } from 'iter-tools/es2018';
@@ -52,7 +53,7 @@ class TextSampler {
     }
 
     async sampleCharacter(currentChar, temperature) {
-        const nextIndex = tf.tidy(() => {
+        const prob = tf.tidy(() => {
             const i = this.encodeChar(currentChar);
             const q = this.model.predict(tf.tensor([[i]])).squeeze();
 
@@ -60,12 +61,13 @@ class TextSampler {
             // that probabilities sum to one in the linear space.
             const logQt = q.maximum(1e-37).log().div(temperature);
             const scaling = tf.logSumExp(logQt);
-            const logP = logQt.sub(scaling);
-            return tf.multinomial(logP, 1);
+            return logQt.sub(scaling).exp();
         })
 
-        const nextChar = this.idx2char[await nextIndex.array()];
-        nextIndex.dispose();
+        // The wasm backend doesn't support tf.multinomial. Therefore,
+        // we use a plain Javascript implementation.
+        const nextChar = sampleWeighted(Object.values(this.idx2char), await prob.array());
+        prob.dispose();
 
         return nextChar;
     }
@@ -214,6 +216,8 @@ async function initialize() {
     const model = await tf.loadLayersModel('/tfjs/model.json');
     const sampler = new TextSampler(model, char2idx);
 
+    console.log(`Tensorflow backend: ${tf.getBackend()}`);
+
     async function generateWithKeywords() {
         const keywords = document.getElementById('keywords-input')
               .value
@@ -228,7 +232,7 @@ async function initialize() {
         await replaceVerses(sampler, keywords);
         const t1 = performance.now();
 
-        console.debug(`Generation took ${t1 - t0} ms`);
+        console.debug(`Generation took ${Math.round(t1 - t0)} ms`);
     };
 
     async function keyhandler(event) {
@@ -250,4 +254,6 @@ async function initialize() {
     await replaceVerses(sampler, []);
 }
 
-initialize();
+tf.setBackend('wasm')
+    .catch(console.warn)
+    .finally(initialize);
