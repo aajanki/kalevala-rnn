@@ -39,32 +39,6 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 parcel static/kalevala.html
 ```
 
-## HTTP server
-
-Copy (and edit if necessary) the sample dotenv file to `.env`.
-```
-cp sample.env .env
-```
-
-Start the server:
-```
-uvicorn src.server:app --reload --env-file .env
-```
-
-## Docker image
-
-Build:
-
-```
-sudo docker build --network=host -t kalevalakone:latest .
-```
-
-Run:
-
-```
-sudo docker run -it --rm -p=5000:5000 kalevalakone:latest
-```
-
 ## License
 
 MIT license

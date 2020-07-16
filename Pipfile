@@ -5,15 +5,9 @@ name = "pypi"
 
 [packages]
 tensorflow = ">=2.2.0,<2.3.0"
+tensorflowjs = ">=2.0.0,<3.0.0"
 numpy = "*"
 matplotlib = "*"
-fastapi = "*"
-uvicorn = "*"
-python-dotenv = "*"
-jinja2 = "*"
-python-multipart = "*"
-aiofiles = "*"
-tensorflowjs = ">=2.0.0,<3.0.0"
 plac = "*"
 
 [dev-packages]
