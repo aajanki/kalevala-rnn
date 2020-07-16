@@ -36,7 +36,7 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 ## Run the app
 
 ```
-parcel static/kalevala.html
+parcel static/index.html
 ```
 
 ## License
