@@ -33,10 +33,10 @@ def main(model_path):
     # copy characters
     shutil.copy(path / 'char2idx.json', output_path / 'char2idx.json')
 
-    # The web app build process reads the model from this link
-    model_path = Path('tfjsmodel')
-    model_path.unlink(missing_ok=True)
-    model_path.symlink_to(output_path, True)
+    # The web app build process reads the model from the prod-model directory
+    model_path = Path('prod-model')
+    for child in output_path.iterdir():
+        shutil.copy(child, model_path)
 
 
 if __name__ == '__main__':

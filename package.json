@@ -2,7 +2,6 @@
   "name": "kalevala-rnn",
   "version": "1.0.0",
   "description": "This project trains a recurrent neural network (RNN) that generates text imitating the style of Kalevala and Kanteletar.",
-  "main": "index.js",
   "scripts": {
     "build": "rm -rf dist && parcel build --experimental-scope-hoisting static/index.html",
     "clean": "rm -rf dist",
@@ -13,7 +12,7 @@
     "url": "git+https://github.com/aajanki/kalevala-rnn.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Antti Ajanki",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aajanki/kalevala-rnn/issues"
@@ -36,7 +35,7 @@
   "staticFiles": {
     "staticPath": [
       {
-        "staticPath": "tfjsmodel",
+        "staticPath": "prod-model",
         "staticOutDir": "tfjs"
       },
       {
