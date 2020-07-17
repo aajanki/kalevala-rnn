@@ -1,5 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-run:
-  web: uvicorn src.server:app --env-file prod.env --host=0.0.0.0 --port=${PORT:-5000}
