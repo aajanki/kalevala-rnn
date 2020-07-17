@@ -39,6 +39,14 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 parcel static/index.html
 ```
 
+## Deploying
+
+```
+npm run zip
+```
+
+Upload saesampo.zip to AWS Amplify.
+
 ## License
 
 MIT license

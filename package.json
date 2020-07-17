@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "This project trains a recurrent neural network (RNN) that generates text imitating the style of Kalevala and Kanteletar.",
   "scripts": {
-    "build": "rm -rf dist && parcel build --experimental-scope-hoisting static/index.html",
+    "build": "rm -rf dist && parcel build static/index.html",
     "clean": "rm -rf dist",
+    "zip": "npm run build && rm -f saesampo.zip && cd dist && zip -r ../saesampo.zip *",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
