@@ -4,6 +4,7 @@ import os.path
 import numpy as np
 from typing import Iterator, List, Optional, Tuple
 from itertools import takewhile, islice
+from scipy.special import logsumexp
 from tensorflow.keras.models import model_from_json
 from .model import build_inference_model
 
@@ -86,14 +87,9 @@ class TextSampler:
         self.model.reset_states()
 
     def sample_next_letter(self, current_index: int, temperature: float) -> Tuple[str, int]:
-        preds = self.model.predict(np.array([[current_index]]))
-        p = np.exp(np.log(np.maximum(preds[0, -1, :], 1e-40)) / temperature)
-        if np.sum(p) < 1e-16:
-            # numerical stability
-            p = np.zeros(len(p))
-            p[np.argmax(preds[0, -1, :])] = 1.0
-        else:
-            p = p / np.sum(p)
+        q = self.model.predict(np.array([[current_index]]))[0, -1, :]
+        logqt = np.log(np.maximum(q, 1e-37)) / temperature
+        p = np.exp(logqt - logsumexp(logqt))
         i = np.random.choice(range(len(self.idx2char)), p=p)
         return self.idx2char[i], i
 
