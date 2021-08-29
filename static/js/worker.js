@@ -1,9 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-wasm';
-import {setWasmPath} from '@tensorflow/tfjs-backend-wasm';
+import {setWasmPaths} from '@tensorflow/tfjs-backend-wasm';
 import {
     asyncDrop, asyncDropWhile, asyncSplitOn, asyncToArray, pipe
-} from 'iter-tools/es2018';
+} from 'iter-tools-es';
 
 
 class TextSampler {
@@ -208,5 +208,5 @@ onmessage = async function (e) {
     postMessage(verses);
 };
 
-setWasmPath('/tfjs-backend-wasm.wasm');
+setWasmPaths('/');
 tf.setBackend('wasm').catch(console.warn);

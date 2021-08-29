@@ -17,8 +17,6 @@ pipenv install
 pipenv shell
 ```
 
-Install [Parcel](https://parceljs.org/getting_started.html).
-
 Training:
 
 ```
@@ -36,7 +34,7 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 ## Run the app
 
 ```
-parcel static/index.html
+./node_modules/.bin/parcel static/index.html
 ```
 
 ## Deploying

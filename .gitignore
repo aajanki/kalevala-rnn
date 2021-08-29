@@ -1,7 +1,6 @@
-/.env
 /weights
 /preprocessed
-/tfjsmodel
 /node_modules/
 /.cache/
+/.parcel-cache/
 /dist/
