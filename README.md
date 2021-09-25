@@ -13,11 +13,10 @@ a stateful RNN with two LSTM layers.
 Prepare the environment:
 
 ```
+npm install
 pipenv install
 pipenv shell
 ```
-
-Install [Parcel](https://parceljs.org/getting_started.html).
 
 Training:
 
@@ -36,7 +35,7 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 ## Run the app
 
 ```
-parcel static/index.html
+npm run start
 ```
 
 ## Deploying
