@@ -35,8 +35,7 @@ python -m src.sample -n 1000 --temperature 0.4 --preseed "Sanoi vanha Väinämö
 ## Run the app
 
 ```
-npm run build
-./node_modules/.bin/parcel static/index.html
+npm run start
 ```
 
 ## Deploying

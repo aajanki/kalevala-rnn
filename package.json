@@ -2,11 +2,11 @@
   "name": "kalevala-rnn",
   "version": "1.1.0",
   "description": "This project trains a recurrent neural network (RNN) that generates text imitating the style of Kalevala and Kanteletar.",
-  "browserslist": "> 1%, last 2 versions, not dead",
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp -r prod-model/ dist/tfjs && cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*wasm  dist && ./node_modules/.bin/parcel build static/index.html",
+    "build": "rm -rf dist && node_modules/.bin/parcel build static/index.html",
     "clean": "rm -rf dist",
     "zip": "npm run build && rm -f saesampo.zip && cd dist && zip -r ../saesampo.zip *",
+    "start": "node_modules/.bin/parcel serve static/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,7 +31,21 @@
     "@babel/core": "^7.10.5",
     "@babel/plugin-transform-runtime": "^7.10.5",
     "babel-preset-env": "^1.7.0",
-    "cssnano": "^5.0.8",
-    "parcel": "^2.0.0-rc.0"
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "^2.6.0"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "prod-model",
+        "staticOutDir": "tfjs"
+      },
+      {
+        "staticPath": "./node_modules/@tensorflow/tfjs-backend-wasm/dist",
+        "excludeGlob": [
+          "**/!(*.wasm)"
+        ]
+      }
+    ]
   }
 }
